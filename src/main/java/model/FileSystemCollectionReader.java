@@ -1,8 +1,11 @@
 package model;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -73,20 +76,16 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
 	public void initialize() throws ResourceInitializationException {
 
 		// open input file
-		File file = new File(
-				((String) getConfigParameterValue(PARAM_INPUTDIR)).trim());
-
 		mCurrentIndex = 0;
-
-		String text = "";
-		try {
-			//read in file input to text
-			text = FileUtils.file2String(file, mEncoding);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		String model = (String) getConfigParameterValue(PARAM_INPUTDIR);
+		FileInputStream frs = (FileInputStream)getClass().getResourceAsStream(model);
 		
+		String text = "";
+		Scanner s = new Scanner(frs);
+		while(s.hasNext()){
+			text += s.nextLine();
+		}
+	
 		//split on newline
 		sentences = text.split("\n");
 

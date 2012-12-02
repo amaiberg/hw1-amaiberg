@@ -20,8 +20,12 @@
 package readers;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Scanner;
+
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
@@ -82,21 +86,19 @@ public class SentenceCollectionReader extends CollectionReader_ImplBase {
 	 */
 	@Override
 	public void initialize() throws ResourceInitializationException {
-		File file = new File(
-				((String) getConfigParameterValue(PARAM_INPUTFILE)).trim());
 		mEncoding = (String) getConfigParameterValue(PARAM_ENCODING);
 		mLanguage = (String) getConfigParameterValue(PARAM_LANGUAGE);
-		// get list of files in the specified directory, and subdirectories if
-		// the
-		// parameter PARAM_SUBDIR is set to True
-		try {
-			text = FileUtils.file2String(file, mEncoding).split("\n");
-			numSentences = text.length;
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		String model = (String) getConfigParameterValue(PARAM_INPUTFILE);
+		InputStream frs = getClass().getClassLoader().getResourceAsStream( model);
+		String bufferedText ="";
+		Scanner s = new Scanner(frs);
+		while(s.hasNext()){
+			bufferedText += s.nextLine();
 		}
+		
+		text = bufferedText.split("\n");
+		numSentences = text.length;
+		
 
 	}
 

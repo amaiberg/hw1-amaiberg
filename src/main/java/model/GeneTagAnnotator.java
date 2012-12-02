@@ -2,6 +2,7 @@ package model;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.Set;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
@@ -26,16 +27,19 @@ import com.aliasi.util.AbstractExternalizable;
 
 public class GeneTagAnnotator extends JCasAnnotator_ImplBase {
 
-	private final String chunkerFilePath = "resources/ne-en-bio-genetag.HmmChunker";
+	private final String chunkerFilePath = "ne-en-bio-genetag.HmmChunker";
 
 	/** Reads the in GeneSentences and then runs the HmmChunker to retrieve relevant gene mentions.
 	 * It then stores those mentions inside the GeneTag type which is stored into the cas.
- * 
  */
 	@Override
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
-		File f = new File(chunkerFilePath);
-
+		File f = null;
+		try {
+			f = new File(getClass().getClassLoader().getResource(chunkerFilePath).toURI().toString());
+		} catch (URISyntaxException e1) {
+				e1.printStackTrace();
+		}
 		try {
 			Chunker chunker = (Chunker) AbstractExternalizable.readObject(f);
 			Iterator sentenceIter = aJCas.getAnnotationIndex(GeneSentence.type)
