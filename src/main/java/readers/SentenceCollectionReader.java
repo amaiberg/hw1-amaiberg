@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -89,9 +90,15 @@ public class SentenceCollectionReader extends CollectionReader_ImplBase {
 		mEncoding = (String) getConfigParameterValue(PARAM_ENCODING);
 		mLanguage = (String) getConfigParameterValue(PARAM_LANGUAGE);
 		String model = (String) getConfigParameterValue(PARAM_INPUTFILE);
-		InputStream frs = getClass().getClassLoader().getResourceAsStream( model);
+		URL url = getClass().getClassLoader().getResource( model);
 		String bufferedText ="";
-		Scanner s = new Scanner(frs);
+		Scanner s=null;
+		try {
+			s = new Scanner(url.openStream());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		while(s.hasNext()){
 			bufferedText += s.nextLine();
 		}
