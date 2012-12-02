@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.Set;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
@@ -39,12 +40,12 @@ public class GeneTagAnnotator extends JCasAnnotator_ImplBase {
 	@Override
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
 		InputStream is = null;
-		is = getClass().getClassLoader().getResourceAsStream(chunkerFilePath);
+		URL url = getClass().getClassLoader().getResource(chunkerFilePath);
 
 			try {
 				// Chunker chunker = (Chunker)
 				// AbstractExternalizable.readObject(f) ;
-				Chunker chunker = (Chunker) new ObjectInputStream(is)
+				Chunker chunker = (Chunker) new ObjectInputStream(url.openStream())
 						.readObject();
 
 				Iterator sentenceIter = aJCas.getAnnotationIndex(
